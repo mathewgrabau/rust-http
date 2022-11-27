@@ -1,4 +1,4 @@
-use std::net::TcpListener;
+use std::{net::TcpListener, io::Read, io::Write, fs::read};
 
 fn main() {
     const ADDR: &str = "127.0.0.1";
@@ -10,8 +10,27 @@ fn main() {
         let listener = listener_result.unwrap();
 
         for stream in listener.incoming() {
-            let _stream = stream.unwrap();
+            let mut stream = stream.unwrap();
             println!("Server established a connection");
+            let mut buffer = [0; 1024];
+            // Echo
+            let read_result = stream.read(&mut buffer);
+            match read_result {
+                Ok(_) => {
+                    let write_result = stream.write(&mut buffer);
+                    match write_result {
+                        Ok(_) => {
+                            // Nothing to do here
+                        },
+                        Err(e) => {
+                            eprintln!("Write error:\n{}", e);
+                        },
+                    }
+                },
+                Err(e) => {
+                    eprintln!("Read error: {}", e);
+                }
+            }
         }
     } else {
         eprintln!("bind() failed:\n{}", listener_result.unwrap_err())

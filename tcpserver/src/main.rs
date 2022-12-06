@@ -20,7 +20,7 @@ fn main() {
                     let write_result = stream.write(&mut buffer);
                     match write_result {
                         Ok(_) => {
-                            // Nothing to do here
+                            // Nothing to do here, the write was successful
                         },
                         Err(e) => {
                             eprintln!("Write error:\n{}", e);
